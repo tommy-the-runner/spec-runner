@@ -49,4 +49,19 @@ describe('tommy the runner', function () {
 
         return expect(result).to.eventually.have.property('failures').length(3)
     })
+
+    it('should reject syntax errors', function () {
+        const code = `
+            function sum(a, b) {
+                return a + b
+
+
+            module.exports = sum
+        `
+
+        const spec = getFileContents(__dirname, '..', 'fixtures', 'spec1.js')
+        const result = tommy.run(code, spec)
+
+        return expect(result).to.eventually.be.rejectedWith(/Unexpected token/)
+    })
 })
