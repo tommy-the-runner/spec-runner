@@ -1,0 +1,26 @@
+{
+  "name": "tommy-the-runner",
+  "version": "0.0.1",
+  "description": "",
+  "main": "lib/runner.js",
+  "scripts": {
+    "test": "mocha spec/**"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tommy-the-runner/spec-runner.git"
+  },
+  "author": "ertrzyiks <mateusz.derks@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tommy-the-runner/spec-runner/issues"
+  },
+  "homepage": "https://github.com/tommy-the-runner/spec-runner#readme",
+  "dependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "mocha": "^2.4.5",
+    "require-from-string": "^1.1.0",
+    "sinon": "^1.17.3"
+  }
+}
