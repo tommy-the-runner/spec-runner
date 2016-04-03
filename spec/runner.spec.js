@@ -12,56 +12,74 @@ const expect = chai.expect
 
 const tommy = require('../lib/runner')
 
-const getFileContents = function () {
-    const filePath = path.resolve.apply(this, arguments)
-    const fileContent = fs.readFileSync(filePath)
-
-    return fileContent.toString()
-}
-
 describe('tommy the runner', function () {
-    it('should run valid source code against spec', function () {
-        const code = `
-            function sum(a, b) {
-                return a + b
-            }
 
-            module.exports = sum
-        `
+    describe('compile', function () {
+        it('should handle modules using module.exports', function () {
+            const code = `
+                module.exports = { a: 5 }
+            `
 
-        const spec = getFileContents(__dirname, '..', 'fixtures', 'spec1.js')
-        const result = tommy.run(code, spec)
+            const result = tommy.compile(code)
 
-        return expect(result).to.eventually.have.property('failures').length(0)
+            expect(result).to.have.property('a').equal(5)
+        })
+
+        it('should handle modules using exports alias', function () {
+            const code = `
+                exports.a = 5
+            `
+
+            const result = tommy.compile(code)
+
+            expect(result).to.have.property('a').equal(5)
+        })
     })
 
-    it('should run invalid code against spec and report errors', function () {
-        const code = `
-            function sum(a, b) {
-                return a - b
-            }
+    describe('run', function () {
+        it('should run valid source code against spec', function () {
+            const code = `
+                function sum(a, b) {
+                    return a + b
+                }
 
-            module.exports = sum
-        `
+                module.exports = sum
+            `
 
-        const spec = getFileContents(__dirname, '..', 'fixtures', 'spec1.js')
-        const result = tommy.run(code, spec)
+            const spec = fs.readFileSync(__dirname + '/../fixtures/spec1.js', 'utf8').toString()
+            const result = tommy.run(code, spec)
 
-        return expect(result).to.eventually.have.property('failures').length(3)
-    })
+            return expect(result).to.eventually.have.property('failures').length(0)
+        })
 
-    it('should reject syntax errors', function () {
-        const code = `
-            function sum(a, b) {
-                return a + b
+        it('should run invalid code against spec and report errors', function () {
+            const code = `
+                function sum(a, b) {
+                    return a - b
+                }
+
+                module.exports = sum
+            `
+
+            const spec = fs.readFileSync(__dirname + '/../fixtures/spec1.js', 'utf8').toString()
+            const result = tommy.run(code, spec)
+
+            return expect(result).to.eventually.have.property('failures').length(3)
+        })
+
+        it('should reject syntax errors', function () {
+            const code = `
+                function sum(a, b) {
+                    return a + b
 
 
-            module.exports = sum
-        `
+                module.exports = sum
+            `
 
-        const spec = getFileContents(__dirname, '..', 'fixtures', 'spec1.js')
-        const result = tommy.run(code, spec)
+            const spec = fs.readFileSync(__dirname + '/../fixtures/spec1.js', 'utf8').toString()
+            const result = tommy.run(code, spec)
 
-        return expect(result).to.eventually.be.rejectedWith(/Unexpected token/)
+            return expect(result).to.eventually.be.rejectedWith(/Unexpected token|SyntaxError/)
+        })
     })
 })
