@@ -2,6 +2,10 @@
 
 Evaluate string with code against provided test suite.
 
+## Installation
+
+`npm install tommy-the-runner --save`
+
 ## Api
 
 #### tommy.run(code, specs)
