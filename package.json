@@ -25,6 +25,7 @@
     "sinon": "^1.17.3"
   },
   "devDependencies": {
+    "babelify": "^7.3.0",
     "brfs": "^1.4.3",
     "browserify": "^13.0.0",
     "dotenv": "^2.0.0",
@@ -32,6 +33,12 @@
     "karma-browserify": "^5.0.3",
     "karma-chrome-launcher": "^0.2.3",
     "karma-mocha": "^0.2.2",
-    "karma-sauce-launcher": "^0.3.1"
+    "karma-sauce-launcher": "^0.3.1",
+    "watchify": "^3.7.0"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
   }
 }
