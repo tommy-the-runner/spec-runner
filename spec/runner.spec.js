@@ -52,6 +52,19 @@ describe('tommy the runner', function () {
             return expect(result).to.eventually.have.property('failures').length(0)
         })
 
+        it('should inject custom modules', function () {
+            const code = ''
+
+            const spec = fs.readFileSync(__dirname + '/../fixtures/spec2.js', 'utf8').toString()
+            const result = tommy.run(code, spec, {
+                extraModules: {
+                    'get-five': function () { return 5 }
+                }
+            })
+
+            return expect(result).to.eventually.have.property('failures').length(0)
+        })
+
         it('should run invalid code against spec and report errors', function () {
             const code = `
                 function sum(a, b) {

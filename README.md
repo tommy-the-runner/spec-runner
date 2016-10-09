@@ -8,13 +8,18 @@ Evaluate string with code against provided test suite.
 
 ## Api
 
-#### tommy.run(code, specs)
+#### tommy.run(code, specs, runnerOptions)
 
 Execute tests. Returns Promise resolved with reporter or rejected with eval error
 
 `code` is a String with javascript code to evaluate 
 
 `specs` is a String with mocha test suite written using bdd interface.
+
+`runnerOptions` is an Object of options for the runner. Available options:
+ 
+ - `extraModules` is an Object with custom modules requirable in the spec code. 
+ The key is module name and the value is an object returned by the require call to that modules
 
 Module exported in `code` is available under `require('subject')` in `specs` code 
 
