@@ -26,7 +26,7 @@ module.exports = function(config) {
         browserDisconnectTimeout: 30000,
         browserNoActivityTimeout: 30000,
 
-        frameworks: ['mocha', 'browserify'],
+        frameworks: ['tap', 'browserify'],
         reporters: ['dots', 'saucelabs'],
 
         preprocessors: {
