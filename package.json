@@ -4,7 +4,7 @@
   "description": "",
   "main": "lib/runner.js",
   "scripts": {
-    "test:server": "mocha spec/**",
+    "test:server": "blue-tape spec/**",
     "test:browsers": "karma start --single-run",
     "test": "npm run test:server && npm run test:browsers"
   },
@@ -26,14 +26,16 @@
   },
   "devDependencies": {
     "babelify": "^7.3.0",
+    "blue-tape": "^1.0.0",
     "brfs": "^1.4.3",
     "browserify": "^13.0.0",
     "dotenv": "^2.0.0",
     "karma": "^0.13.22",
     "karma-browserify": "^5.0.3",
     "karma-chrome-launcher": "^0.2.3",
-    "karma-mocha": "^0.2.2",
     "karma-sauce-launcher": "^0.3.1",
+    "karma-tap": "^3.1.1",
+    "tape": "^4.6.3",
     "watchify": "^3.7.0"
   },
   "browserify": {

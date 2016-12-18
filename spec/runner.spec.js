@@ -2,97 +2,100 @@
 
 const fs = require('fs')
 const path = require('path')
-
-const chai = require('chai')
-chai.use(require('chai-as-promised'))
-
-const sinon = require('sinon')
-
-const expect = chai.expect
+var test = require('tape')
+var testAsync = require('blue-tape')
 
 const tommy = require('../lib/runner')
 
-describe('tommy the runner', function () {
+test('tommy the runner  - compile  - should handle modules using module.exports', function (t) {
+    t.plan(1)
 
-    describe('compile', function () {
-        it('should handle modules using module.exports', function () {
-            const code = `
-                module.exports = { a: 5 }
-            `
+    const code = `module.exports = { a: 5 }`
+    const result = tommy.compile(code)
 
-            const result = tommy.compile(code)
+    t.equal(result.a, 5)
+    t.end()
+})
 
-            expect(result).to.have.property('a').equal(5)
-        })
+test('tommy the runner  - compile  - should handle modules using exports alias', function (t) {
+    t.plan(1)
 
-        it('should handle modules using exports alias', function () {
-            const code = `
-                exports.a = 5
-            `
+    const code = `exports.a = 5`
+    const result = tommy.compile(code)
 
-            const result = tommy.compile(code)
+    t.equal(result.a, 5)
+    t.end()
+})
 
-            expect(result).to.have.property('a').equal(5)
-        })
+
+testAsync('tommy the runner - run - should run valid source code against spec', function (t) {
+    const code = `
+        function sum(a, b) {
+            return a + b
+        }
+
+        module.exports = sum
+    `
+
+    const spec = fs.readFileSync(__dirname + '/../fixtures/spec1.js', 'utf8').toString()
+    const result = tommy.run(code, spec)
+
+    return result.then((suite) => {
+        t.equal(suite.failures.length, 0)
+    })
+})
+
+testAsync('tommy the runner - run - should inject custom modules', function (t) {
+    const code = ''
+
+    const spec = fs.readFileSync(__dirname + '/../fixtures/spec2.js', 'utf8').toString()
+    const result = tommy.run(code, spec, {
+        extraModules: {
+            'get-five': function () { return 5 }
+        }
     })
 
-    describe('run', function () {
-        it('should run valid source code against spec', function () {
-            const code = `
-                function sum(a, b) {
-                    return a + b
-                }
-
-                module.exports = sum
-            `
-
-            const spec = fs.readFileSync(__dirname + '/../fixtures/spec1.js', 'utf8').toString()
-            const result = tommy.run(code, spec)
-
-            return expect(result).to.eventually.have.property('failures').length(0)
-        })
-
-        it('should inject custom modules', function () {
-            const code = ''
-
-            const spec = fs.readFileSync(__dirname + '/../fixtures/spec2.js', 'utf8').toString()
-            const result = tommy.run(code, spec, {
-                extraModules: {
-                    'get-five': function () { return 5 }
-                }
-            })
-
-            return expect(result).to.eventually.have.property('failures').length(0)
-        })
-
-        it('should run invalid code against spec and report errors', function () {
-            const code = `
-                function sum(a, b) {
-                    return a - b
-                }
-
-                module.exports = sum
-            `
-
-            const spec = fs.readFileSync(__dirname + '/../fixtures/spec1.js', 'utf8').toString()
-            const result = tommy.run(code, spec)
-
-            return expect(result).to.eventually.have.property('failures').length(3)
-        })
-
-        it('should reject syntax errors', function () {
-            const code = `
-                function sum(a, b) {
-                    return a + b
-
-
-                module.exports = sum
-            `
-
-            const spec = fs.readFileSync(__dirname + '/../fixtures/spec1.js', 'utf8').toString()
-            const result = tommy.run(code, spec)
-
-            return expect(result).to.eventually.be.rejectedWith(/Unexpected token|SyntaxError/)
-        })
+    return result.then((suite) => {
+        t.equal(suite.failures.length, 0)
     })
+})
+
+testAsync('tommy the runner - run - should run invalid code against spec and report errors', function (t) {
+    const code = `
+        function sum(a, b) {
+            return a - b
+        }
+        module.exports = sum
+    `
+
+    const spec = fs.readFileSync(__dirname + '/../fixtures/spec1.js', 'utf8').toString()
+    const result = tommy.run(code, spec)
+
+    return result.then((suite) => {
+        t.equal(suite.failures.length, 3)
+    })
+})
+
+testAsync('tommy the runner - run - should reject syntax errors', function (t) {
+    const code = `
+        function sum(a, b) {
+            return a + b
+        module.exports = sum
+    `
+
+    const spec = fs.readFileSync(__dirname + '/../fixtures/spec1.js', 'utf8').toString()
+    const result = tommy.run(code, spec)
+
+    return result.catch((err) => {
+
+        t.ok(err.toString().match(/Unexpected token|SyntaxError/))
+    })
+})
+
+testAsync('should support all functions from BDD interface', function (t) {
+    const code = ``
+    const spec = fs.readFileSync(__dirname + '/../fixtures/spec3.js', 'utf8').toString()
+    const result = tommy.run(code, spec)
+
+    return result
 })
