@@ -1,23 +1,11 @@
-describe('xdescribe', function () {
+describe('xdescribe', function () {})
+xdescribe('xdescribe', function () {})
 
-})
+context('context', function () {})
+xcontext('xcontext', function () {})
 
-xdescribe('xdescribe', function () {
+it('it', function () {})
+xit('xit', function () {})
 
-})
-
-it('it', function () {
-
-})
-
-xit('xit', function () {
-
-})
-
-context('context', function () {
-
-})
-
-xcontext('xcontext', function () {
-
-})
+specify('specify', function () {})
+xspecify('xspecify', function () {})
