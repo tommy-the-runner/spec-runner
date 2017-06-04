@@ -45,6 +45,23 @@ testAsync('tommy the runner - run - should run valid source code against spec', 
     })
 })
 
+testAsync('tommy the runner - run - should allow to configure subject package name', function (t) {
+    const code = `
+        function sum(a, b) {
+            return a + b
+        }
+
+        module.exports = sum
+    `
+
+    const spec = fs.readFileSync(__dirname + '/../fixtures/spec1a.js', 'utf8').toString()
+    const result = tommy.run(code, spec, {subjectPackageName: 'your code here'})
+
+    return result.then((suite) => {
+        t.equal(suite.failures.length, 0)
+    })
+})
+
 testAsync('tommy the runner - run - should inject custom modules', function (t) {
     const code = ''
 
